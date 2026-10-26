@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<!-- Shown by the home screen app (PWA service worker) when Number Hop is
+		     opened without internet before it has ever been loaded completely. -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#f3eee6">
+		<title>Number Hop is offline</title>
+		<style>
+html, body {
+	margin: 0;
+	height: 100%;
+	background: radial-gradient(ellipse at 50% 30%, #fffaf2 0%, #f3eee6 55%, #e9dccb 100%);
+	color: #3b2c24;
+	font-family: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	text-align: center;
+	padding: 0 1.5rem;
+	box-sizing: border-box;
+}
+
+h1 {
+	margin: 0;
+	font-size: 2.2rem;
+	font-weight: 900;
+}
+
+p {
+	margin: 0;
+	max-width: 26rem;
+	font-size: 1.1rem;
+	line-height: 1.4;
+	color: #7a6457;
+}
+
+button {
+	margin-top: 1rem;
+	padding: 0.9rem 2.2rem;
+	border: 0;
+	border-radius: 2rem;
+	background: linear-gradient(180deg, #6fe0ea 0%, #2ec5d3 55%, #1a9fb0 100%);
+	box-shadow: 0 0.35rem 0 #13808e, 0 0.6rem 1.2rem rgba(90, 60, 30, 0.2);
+	color: #ffffff;
+	font: inherit;
+	font-size: 1.3rem;
+	font-weight: 900;
+	cursor: pointer;
+}
+
+button:active {
+	transform: translateY(0.25rem);
+	box-shadow: 0 0.1rem 0 #13808e, 0 0.3rem 0.8rem rgba(90, 60, 30, 0.2);
+}
+		</style>
+	</head>
+	<body>
+		<h1>No internet yet!</h1>
+		<p>Number Hop needs the internet the very first time, to fetch its blocks. After that it works offline too.</p>
+		<button type="button">Try again</button>
+		<script>
+document.querySelector('button').addEventListener('click', () => {
+	window.location.reload();
+});
+		</script>
+	</body>
+</html>
