@@ -7,7 +7,8 @@
 		     warm loading card, a friendly error card and phone settings: no pinch or
 		     double-tap zoom, no pull-to-refresh, no text selection or long-press
 		     menus, the game kept clear of notches (no viewport-fit=cover), home screen app
-		     (PWA) metadata, and ?seed=N / ?autoplay passed to the game. -->
+		     (PWA) metadata, a new upload picked up on the next start (no closing tabs or
+		     clearing data), and ?seed=N / ?autoplay passed to the game. -->
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="description" content="Number Hop: hop onto smaller numbers and grow your Numberblock from 5 to 1000 (or a million!). A friendly number game for kids.">
 		<meta name="theme-color" content="#f3eee6">
@@ -187,7 +188,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":24230416,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"serviceWorker":"index.service.worker.js"};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":24254868,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"serviceWorker":"index.service.worker.js"};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -237,8 +238,54 @@ const engine = new Engine(GODOT_CONFIG);
 		}
 		if (query.get('difficulty') === 'hard' || query.has('hard')) {
 			args.push('--difficulty=hard');
+		} else if (query.get('difficulty') === 'extreme' || query.has('extreme')) {
+			args.push('--difficulty=extreme');
 		}
 		return args.length ? ['--'].concat(args) : [];
+	}
+
+	// New versions: the service worker (the PWA's offline copy) starts the copy it
+	// has, so a new upload would only show once every tab of the game was closed.
+	// On start-up look for a new version; when one is there (or still waiting from
+	// an earlier visit), switch to it and reload, but only while the game is still
+	// loading (never in the middle of a game; then it waits for the next start).
+	function checkForUpdate() {
+		if (!GODOT_CONFIG['serviceWorker'] || !('serviceWorker' in navigator) || !navigator.serviceWorker.controller) {
+			return; // no offline copy yet (first visit)
+		}
+		function activate(worker) {
+			if (initializing) {
+				worker.postMessage('update'); // the worker takes over and reloads the page
+			}
+		}
+		function track(worker) {
+			if (!worker) {
+				return;
+			}
+			if (worker.state === 'installed') {
+				activate(worker);
+				return;
+			}
+			worker.addEventListener('statechange', () => {
+				if (worker.state === 'installed') {
+					activate(worker);
+				}
+			});
+		}
+		navigator.serviceWorker.getRegistration().then((registration) => {
+			if (!registration) {
+				return null;
+			}
+			if (registration.waiting) {
+				activate(registration.waiting);
+				return null;
+			}
+			track(registration.installing);
+			registration.addEventListener('updatefound', () => track(registration.installing));
+			return registration.update();
+		}).catch((err) => {
+			console.warn('Number Hop: could not look for a new version:', err);
+		});
 	}
 
 	function setStatusMode(mode) {
@@ -323,6 +370,7 @@ const engine = new Engine(GODOT_CONFIG);
 		}
 	} else {
 		setStatusMode('progress');
+		checkForUpdate();
 		let caption = 0;
 		const captionTimer = setInterval(() => {
 			caption = (caption + 1) % captions.length;
