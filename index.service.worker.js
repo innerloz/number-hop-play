@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1793117441|2453012';
+const CACHE_VERSION = '1793193029|6734473';
 /** @type {string} */
 const CACHE_PREFIX = 'Number Hop-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
@@ -17,11 +17,40 @@ const ENSURE_CROSSORIGIN_ISOLATION_HEADERS = false;
 const CACHED_FILES = ["index.html","index.js","index.offline.html","index.icon.png","index.apple-touch-icon.png","index.audio.worklet.js","index.audio.position.worklet.js"];
 // Files that we might not want the user to preload, and will only be cached on first load.
 /** @type {string[]} */
-const CACHEABLE_FILES = ["index.wasm","index.pck"];
+const CACHEABLE_FILES = ["index.wasm","index.pck","index.late.e894485f3c22.pck"];
 const FULL_CACHE = CACHED_FILES.concat(CACHEABLE_FILES);
 
+// Number Hop: the install stores the whole game (tools/web_service_worker.gd).
 self.addEventListener('install', (event) => {
-	event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(CACHED_FILES)));
+	event.waitUntil(caches.open(CACHE_NAME).then(async (cache) => {
+		if (self.registration.active) {
+			// An update: as Godot does it (its big files come with its first start), but
+			// revalidated: the HTTP cache may still hold the old upload's files.
+			await cache.addAll(CACHED_FILES.map((name) => new Request(name, { cache: 'no-cache' })));
+			return;
+		}
+		// The first install, right after the page has downloaded the game: what the
+		// page used comes out of the browser's HTTP cache (never a second download).
+		const held = async (name) => {
+			try {
+				const response = await fetch(name, { cache: 'only-if-cached', mode: 'same-origin' });
+				if (response.ok) {
+					await cache.put(name, response);
+					return true;
+				}
+			} catch (err) {
+				// Not in the HTTP cache.
+			}
+			return false;
+		};
+		await Promise.all(CACHED_FILES.map(async (name) => {
+			if (!(await held(name))) {
+				await cache.add(name);
+			}
+		}));
+		// The engine and the game: left to the next visit (as before) if not there.
+		await Promise.all(CACHEABLE_FILES.map(held));
+	}));
 });
 
 self.addEventListener('activate', (event) => {
@@ -72,7 +101,9 @@ async function fetchAndCache(event, cache, isCacheable) {
 	let response = await event.preloadResponse;
 	if (response == null) {
 		// Or, go over network.
-		response = await self.fetch(event.request);
+		// Number Hop: revalidated, never the old upload's file from the HTTP cache.
+		response = await self.fetch(event.request.mode === 'navigate' ? event.request
+				: new Request(event.request, { cache: 'no-cache' }));
 	}
 
 	if (ENSURE_CROSSORIGIN_ISOLATION_HEADERS) {
@@ -107,7 +138,9 @@ self.addEventListener(
 				if (isNavigate) {
 					// Check if we have full cache during HTML page request.
 					/** @type {Response[]} */
-					const fullCache = await Promise.all(FULL_CACHE.map((name) => cache.match(name)));
+					// Number Hop: the second pack (index.late.<md5>.pck) is not needed to start.
+					const fullCache = await Promise.all(FULL_CACHE.filter((name) => !name.includes('.late.'))
+							.map((name) => cache.match(name)));
 					const missing = fullCache.some((v) => v === undefined);
 					if (missing) {
 						try {
@@ -122,6 +155,15 @@ self.addEventListener(
 					}
 				}
 				let cached = await cache.match(event.request);
+				if (cached == null && isNavigate) {
+					// Number Hop: the game's address without index.html, or with options.
+					const page = new URL(event.request.url);
+					const scope = new URL(self.registration.scope);
+					if (page.origin === scope.origin && (page.pathname === scope.pathname
+							|| page.pathname === scope.pathname + CACHED_FILES[0])) {
+						cached = await cache.match(CACHED_FILES[0]);
+					}
+				}
 				if (cached != null) {
 					if (ENSURE_CROSSORIGIN_ISOLATION_HEADERS) {
 						cached = ensureCrossOriginIsolationHeaders(cached);
