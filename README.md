@@ -11,6 +11,10 @@ Start by choosing Charlie, Charles, Henry, Dylan, Anna or William from their blo
 portraits, then pick a level. Your portrait and name stay with you while you play.
 Use **Change player** on the title or pause menu when it's someone else's turn.
 
+Henry has a special **sixth birthday** welcome: a birthday jingle and a cake with
+six candles and a big 6! Choose his portrait to celebrate, then pick a level.
+Henry starts each new round at **6**; everyone else starts at **5**.
+
 * **Keyboard:** arrow keys (or WASD) to walk, **Space** to hop, Esc to pause, M to mute.
 * **Phone / tablet:** drag anywhere in the play area to walk, lift to stop, and tap
   anywhere to hop. Tap with a second finger to hop while steering. The pictured
