@@ -18,6 +18,12 @@ Smaller starter tiles help Anna and William get growing straight away.
 Henry has a special **sixth birthday** welcome: a birthday jingle and a cake with
 six candles and a big 6! Choose his portrait to celebrate, then pick a level.
 
+**Extreme** has addition, subtraction and **×2, ×3, ×4 and ×5** tiles. Extra small
+subtractions help you correct your total; division and square-root tiles are removed.
+Land exactly on **100, 1,000, 10,000, 100,000 or 1,000,000** for a special
+achievement and celebration (up to your level's goal). Subtraction counts too!
+Each achievement celebrates once per round.
+
 * **Keyboard:** arrow keys (or WASD) to walk, **Space** to hop, Esc to pause, M to mute.
 * **Phone / tablet:** drag anywhere in the play area to walk, lift to stop, and tap
   anywhere to hop. Tap with a second finger to hop while steering. The pictured
