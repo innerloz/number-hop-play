@@ -8,8 +8,10 @@ it is added to you. Keep growing! Easy goes up to 1,000, Hard all the way to
 1,000,000, and there are a few secret surprises on the way.
 
 * **Keyboard:** arrow keys (or WASD) to walk, **Space** to hop, Esc to pause, M to mute.
-* **Phone / tablet:** the big arrow pad on the left to walk, the **HOP** button on the
-  right to hop. Landscape works best. You can add it to your home screen.
+* **Phone / tablet:** drag anywhere in the play area to walk, lift to stop, and tap
+  anywhere to hop. Tap with a second finger to hop while steering. The pictured
+  arrow pad and **HOP** button still work. Landscape works best. You can add it
+  to your home screen.
 
 Made with [Godot](https://godotengine.org). Fonts: Nunito and Titan One (SIL Open
 Font License). Everything else (models, textures, sounds, music) was made for this
