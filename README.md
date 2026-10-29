@@ -7,6 +7,10 @@ standing on a board of numbers: hop onto a number that is **smaller than you** a
 it is added to you. Keep growing! Easy goes up to 1,000, Hard all the way to
 1,000,000, and there are a few secret surprises on the way.
 
+Start by choosing Charlie, Charles, Henry or Dylan from their block character
+portraits, then pick a level. Your portrait and name stay with you while you play.
+Use **Change player** on the title or pause menu when it's someone else's turn.
+
 * **Keyboard:** arrow keys (or WASD) to walk, **Space** to hop, Esc to pause, M to mute.
 * **Phone / tablet:** drag anywhere in the play area to walk, lift to stop, and tap
   anywhere to hop. Tap with a second finger to hop while steering. The pictured
