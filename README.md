@@ -7,11 +7,11 @@ standing on a board of numbers: hop onto a number that is **smaller than you** a
 it is added to you. Keep growing! Easy goes up to 1,000, Hard all the way to
 1,000,000, and there are a few secret surprises on the way.
 
-Start by choosing Charlie, Charles, Henry, Dylan, Anna or William from their block character
+Start by choosing Charlie, George, Henry, Dylan, Anna or William from their block character
 portraits, then pick a level. Your portrait and name stay with you while you play.
 Use **Change player** on the title or pause menu when it's someone else's turn.
 
-Each player starts as their age: **Charlie 8**, **Charles 4**, **Henry 6**,
+Each player starts as their age: **Charlie 8**, **George 4**, **Henry 6**,
 **Dylan 5**, **Anna 2**, and **William 3**. This applies on every level and replay.
 Smaller starter tiles help Anna and William get growing straight away.
 
